@@ -5,11 +5,10 @@ body{
  }
 
 #sketch-holder{
-	position: relative;
-	left: 30%;
-	top: 10px;
-	width: 800px;
-	height: 600px;
+	display: flex;
+  justify-content: center;
+	margin-top: 2%;
+	/*cursor: none;*/
 }
 #back-button {
     position: fixed;
