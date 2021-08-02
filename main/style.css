@@ -8,7 +8,6 @@ body{
 	display: flex;
   justify-content: center;
 	margin-top: 2%;
-	/*cursor: none;*/
 }
 #back-button {
     position: fixed;

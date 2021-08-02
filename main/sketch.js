@@ -15,10 +15,12 @@ let cloud6_cord = 30;
 let crosshair;
 let bullet;
 let bullet_cord = ['255', '277', '300'];
-var clicks = 0;
+let clicks = 0;
 let score = 0;
+let startCounter = 5;
+let counterX = 500;
+let counterY = 250;
 
-let ambient_sound;
 let gun_reload;
 let gun_shot;
 let out_of_ammo;
@@ -35,8 +37,8 @@ function preload(){
   var canvas =  createCanvas(canvasWidth, canvasHeight);
   canvas.mouseClicked(clickOnlyCanvas);
   canvas.parent('sketch-holder');
+  noCursor();
   frameRate(30);
-
   img_background = loadImage('main/assets/background.png');
   img_grass = loadImage('main/assets/grass.png');
   img_bush = loadImage('main/assets/bush.png');
@@ -47,14 +49,12 @@ function preload(){
   img_cloud3 = loadImage(img_clouds[2]);
   img_cloud4 = loadImage(img_clouds[3]);
   img_cloud5 = loadImage(img_clouds[4]);
-  img_cloud6 = loadImage(img_clouds[5]);
-
+  img_cloud6 = loadImage(img_clouds[5])
   bullet = loadImage('main/assets/bullet.png');
-
-
   crosshair = loadImage('main/assets/crosshair.png');
+  setInterval(startTimer, 1300);
+}
 
-}
 function draw() {
   moveclouds();
   image(img_background, 0, 0);
@@ -75,10 +75,21 @@ function preload(){
   image(img_cloud6, cloud6_cord, 95, 110, 80);
 
   image(crosshair, mouseX-16, mouseY-16);
+  push();
+  textSize(40);
+  text(startCounter,counterX,counterY);
+  text('Get ready',counterX-80,counterY+50);
+  pop();
 
+  if(clicks >= 3){
+    text('No Ammo', mouseX-40, mouseY+40);
+  }else {
+    text('', mouseX, mouseY);
   }
+  dogSearching();
+}
 
-  function moveclouds(){
+function moveclouds(){
     cloud1_cord = cloud1_cord + random(0.10, 0.19); //0.10
     cloud2_cord = cloud2_cord + random(0.15, 0.23); //0.15
     cloud3_cord = cloud3_cord + random(0.12, 0.25); //0.12
@@ -108,13 +119,13 @@ function preload(){
     }
   }
 
-  function clickOnlyCanvas(event){
+function clickOnlyCanvas(event){
     console.log(event);
     clicks++;
     shoot();
   }
 
-  function keyPressed() {
+function keyPressed() {
   if (keyCode === 82) {
     bullet_cord[0] = 255;
     bullet_cord[1] = 277;
@@ -124,7 +135,8 @@ function preload(){
     console.log('reload ammo');
   }
 }
-  function shoot(){
+
+function shoot(){
     if (clicks === 1) {
       bullet_cord[0] = -1000;
       score += 300;
@@ -142,14 +154,13 @@ function preload(){
       console.log(clicks);
     }else if(clicks >= 3){
       out_of_ammo.play();
-      text('Out of ammo', mouseX, mouseY);
       console.log('out of ammo');
     }else{
       keyPressed();
     }
   }
 
-  function navbar(){
+function navbar(){
     //shots
     push();
     stroke(color(121,197,21));
@@ -195,5 +206,20 @@ function preload(){
     fill(255);
     text(score, 723, 743);
     textStyle(BOLD);
+  }
+
+function startTimer(){
+    startCounter -= 1;
+    if (startCounter === 0) {
+      counterX = -1000;
+      counterY = -1000;
+    }
 
   }
+
+function dogSearching(){
+  if (startCounter === 0) {
+    //start dog movement animation
+    console.log('dog walk');
+  }
+}
