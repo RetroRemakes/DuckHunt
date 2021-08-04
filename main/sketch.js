@@ -20,6 +20,13 @@ let score = 0;
 let startCounter = 5;
 let counterX = 500;
 let counterY = 250;
+let dog_search;
+let dogX = 150;
+let duckX = 200;
+let duckY = 600;
+let duckXSpeed = 3;
+let duckYSpeed = 3;
+let clickPosition;
 
 let gun_reload;
 let gun_shot;
@@ -39,6 +46,7 @@ function preload(){
   canvas.parent('sketch-holder');
   noCursor();
   frameRate(30);
+  dog_search = loadGif('main/assets/dog_searching.gif');
   img_background = loadImage('main/assets/background.png');
   img_grass = loadImage('main/assets/grass.png');
   img_bush = loadImage('main/assets/bush.png');
@@ -49,7 +57,7 @@ function preload(){
   img_cloud3 = loadImage(img_clouds[2]);
   img_cloud4 = loadImage(img_clouds[3]);
   img_cloud5 = loadImage(img_clouds[4]);
-  img_cloud6 = loadImage(img_clouds[5])
+  img_cloud6 = loadImage(img_clouds[5]);
   bullet = loadImage('main/assets/bullet.png');
   crosshair = loadImage('main/assets/crosshair.png');
   setInterval(startTimer, 1300);
@@ -58,9 +66,11 @@ function preload(){
 function draw() {
   moveclouds();
   image(img_background, 0, 0);
+  //ducks here
   image(img_tree, 30, 200);
   image(img_bush, 850, 460);
   image(img_grass, 0, 0);
+  rect(duckX,duckY,50,50);
   navbar();
   image(bullet, bullet_cord[0], 725);
   image(bullet, bullet_cord[1], 725);
@@ -75,6 +85,7 @@ function preload(){
   image(img_cloud6, cloud6_cord, 95, 110, 80);
 
   image(crosshair, mouseX-16, mouseY-16);
+
   push();
   textSize(40);
   text(startCounter,counterX,counterY);
@@ -86,7 +97,12 @@ function preload(){
   }else {
     text('', mouseX, mouseY);
   }
-  dogSearching();
+
+  if (dogX <= 223){
+    dogSearching();
+  }
+
+  ducksFly();
 }
 
 function moveclouds(){
@@ -139,17 +155,14 @@ function keyPressed() {
 function shoot(){
     if (clicks === 1) {
       bullet_cord[0] = -1000;
-      score += 300;
       gun_shot.play();
       console.log(clicks);
     }else if (clicks === 2) {
       bullet_cord[1] = -1000;
-      score += 300;
       gun_shot.play();
       console.log(clicks);
     }else if (clicks === 3) {
       bullet_cord[2] = -1000;
-      score += 300;
       gun_shot.play();
       console.log(clicks);
     }else if(clicks >= 3){
@@ -158,6 +171,14 @@ function shoot(){
     }else{
       keyPressed();
     }
+
+    //shoot the duck
+    if (clickPosition){
+      if ((mouseX > duckX) && (mouseX < duckX+50) && (mouseY > duckY) && (mouseY < duckY+50)) {
+      score += 500;
+      console.log('got the duck ' + duckX + ' ' + duckY);
+    }
+   }
   }
 
 function navbar(){
@@ -208,18 +229,39 @@ function navbar(){
     textStyle(BOLD);
   }
 
+function mousePressed(){
+  clickPosition = [mouseX, mouseY];
+}
+
 function startTimer(){
     startCounter -= 1;
     if (startCounter === 0) {
       counterX = -1000;
       counterY = -1000;
     }
-
   }
 
 function dogSearching(){
-  if (startCounter === 0) {
-    //start dog movement animation
-    console.log('dog walk');
+  if (startCounter <= 0) {
+    dogX = dogX + 0.5;
+    image(dog_search, dogX, 600);
+    console.log('dog walk ' + dogX);
   }
+}
+
+function ducksFly(){
+  duckX = duckX + duckXSpeed;
+  // console.log('duckX ' + duckX)
+  duckY = duckY - duckYSpeed;
+  // console.log('duckY ' + duckY);
+
+  if (duckX < 0) {
+     duckXSpeed = -duckXSpeed;
+  }else if (duckX > canvasWidth - 50) {
+     duckXSpeed = -duckXSpeed;
+  }else if (duckY < 0) {
+    duckYSpeed = -duckYSpeed;
+  }else if (duckY > canvasHeight) {
+    duckYSpeed = -duckYSpeed;
+ }
 }
